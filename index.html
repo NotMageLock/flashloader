@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flash loader</title>
+    <title>Flash Loader</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,28 +41,43 @@
             border-radius: 5px;
             overflow: hidden;
         }
+
+        #error-message {
+            margin-top: 20px;
+            color: #ff6b6b;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>HTML Flash Player powered by Ruffle</h1>
-    <label for="swf-file">Choose SWF File</label>
-    <input type="file" id="swf-file" accept=".swf">
+    <h1>HTML SWF Loader with Ruffle</h1>
+    <label for="file-input">Choose a File</label>
+    <input type="file" id="file-input">
     
     <div id="ruffle-container">
         <ruffle-player id="ruffle-player" style="width: 100%; height: 100%;"></ruffle-player>
     </div>
 
+    <div id="error-message"></div>
+
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
     <script>
-        const fileInput = document.getElementById('swf-file');
+        const fileInput = document.getElementById('file-input');
         const rufflePlayer = document.getElementById('ruffle-player');
+        const errorMessage = document.getElementById('error-message');
 
         fileInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
-                const objectURL = URL.createObjectURL(file);
-                rufflePlayer.load({ url: objectURL });
+                const fileName = file.name.toLowerCase();
+                if (fileName.endsWith('.swf')) {
+                    const objectURL = URL.createObjectURL(file);
+                    rufflePlayer.load({ url: objectURL });
+                    errorMessage.textContent = ''; // Clear any previous error messages
+                } else {
+                    errorMessage.textContent = 'Error: Please select a valid SWF file.';
+                }
             }
         });
     </script>
